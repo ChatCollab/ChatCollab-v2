@@ -10,7 +10,7 @@ type Config struct {
 
 func Load() (*Config, error) {
     return &Config{
-        DatabaseURL:     getEnvOrDefault("DATABASE_URL", "sqlite3://agent_manager.db"),
+        DatabaseURL:     getEnvOrDefault("DATABASE_URL", "sqlite3://chatcollab.db"),
         OpenRouterKey:   os.Getenv("OPENROUTER_API_KEY"),
         Port:            getEnvOrDefault("PORT", "8080"),
     }, nil
