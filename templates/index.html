@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatCollab API Documentation</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-dark: #395682;
+            --secondary-color: #f0f4f8;
+            --success-color: #48bb78;
+            --danger-color: #e53e3e;
+            --warning-color: #f6ad55;
+            --border-color: #e2e8f0;
+            --text-color: #2d3748;
+            --text-light: #718096;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f8fafc;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .intro {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .endpoints {
+            background-color: white;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .endpoint {
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .endpoint:last-child {
+            border-bottom: none;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            background-color: white;
+            transition: background-color 0.2s;
+        }
+
+        .endpoint-header:hover {
+            background-color: #f9fafb;
+        }
+
+        .method {
+            font-weight: bold;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            width: 80px;
+            text-align: center;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .get {
+            background-color: #3182ce;
+        }
+
+        .post {
+            background-color: #38a169;
+        }
+
+        .put {
+            background-color: #dd6b20;
+        }
+
+        .delete {
+            background-color: #e53e3e;
+        }
+
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        .endpoint-description {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-left: 1rem;
+        }
+
+        .endpoint-details {
+            padding: 1.5rem;
+            background-color: var(--secondary-color);
+            display: none;
+        }
+
+        .endpoint.active .endpoint-details {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.15s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            font-family: monospace;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-sm {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .response {
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        .response h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .success {
+            background-color: #e6fffa;
+            color: #047857;
+        }
+
+        .error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .response-body {
+            background-color: #2d3748;
+            color: #f7fafc;
+            border-radius: 4px;
+            padding: 1rem;
+            overflow: auto;
+            font-family: monospace;
+            white-space: pre;
+            max-height: 300px;
+        }
+
+        .empty-state {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .stored-values {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stored-value {
+            display: flex;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: monospace;
+        }
+
+        .stored-value span {
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            padding: 0.25rem;
+            border-radius: 4px;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .endpoint-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .method {
+                margin-bottom: 0.5rem;
+            }
+
+            .endpoint-description {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>ChatCollab API Documentation</h1>
+        <p>Interactive API documentation for testing all endpoints</p>
+    </header>
+
+    <main>
+        <div class="intro">
+            <h2>API Overview</h2>
+            <p>This interactive documentation allows you to test all endpoints of the ChatCollab API. Click on an
+                endpoint to expand its details and make test requests.</p>
+            <p>Key IDs (session, agent, message) are stored at the bottom of the page for easy access during testing.
+            </p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Session Endpoints</div>
+            <div class="endpoints">
+                <!-- Create Session -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method post">POST</div>
+                        <div class="endpoint-path">/api/sessions</div>
+                        <div class="endpoint-description">Create a new session</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Creates a new chat session with a unique ID and initialized heartbeat timestamp.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'POST', '/api/sessions', null, 'create-session-response', handleSessionResponse)">
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="create-session-response"></div>
+                    </div>
+                </div>
+
+                <!-- List Sessions -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/sessions</div>
+                        <div class="endpoint-description">List all sessions</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves a list of all sessions.</p>
+                        <form onsubmit="testEndpoint(event, 'GET', '/api/sessions', null, 'list-sessions-response')">
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="list-sessions-response"></div>
+                    </div>
+                </div>
+
+                <!-- Get Session -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/sessions/{id}</div>
+                        <div class="endpoint-description">Get a specific session</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves a specific session by its ID.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/sessions/' + document.getElementById('get-session-id').value, null, 'get-session-response')">
+                            <div class="form-group">
+                                <label for="get-session-id">Session ID</label>
+                                <input type="text" id="get-session-id" class="form-control"
+                                    placeholder="Enter session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('get-session-id', sessionId)">Use Current Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="get-session-response"></div>
+                    </div>
+                </div>
+
+                <!-- Update Session Heartbeat -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method put">PUT</div>
+                        <div class="endpoint-path">/api/sessions/{id}/heartbeat</div>
+                        <div class="endpoint-description">Update session heartbeat</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Updates the last heartbeat time for a session to keep it active.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'PUT', '/api/sessions/' + document.getElementById('heartbeat-session-id').value + '/heartbeat', null, 'heartbeat-session-response')">
+                            <div class="form-group">
+                                <label for="heartbeat-session-id">Session ID</label>
+                                <input type="text" id="heartbeat-session-id" class="form-control"
+                                    placeholder="Enter session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('heartbeat-session-id', sessionId)">Use Current Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="heartbeat-session-response"></div>
+                    </div>
+                </div>
+
+                <!-- List Active Sessions -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/sessions/active</div>
+                        <div class="endpoint-description">List active sessions</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Lists all sessions that have had heartbeat updates within the timeout period (default 5
+                            minutes).</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/sessions/active', null, 'active-sessions-response')">
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="active-sessions-response"></div>
+                    </div>
+                </div>
+
+                <!-- Delete Session -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method delete">DELETE</div>
+                        <div class="endpoint-path">/api/sessions/{id}</div>
+                        <div class="endpoint-description">Delete a session</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Deletes a session and all its associated data.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'DELETE', '/api/sessions/' + document.getElementById('delete-session-id').value, null, 'delete-session-response')">
+                            <div class="form-group">
+                                <label for="delete-session-id">Session ID</label>
+                                <input type="text" id="delete-session-id" class="form-control"
+                                    placeholder="Enter session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('delete-session-id', sessionId)">Use Current Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="delete-session-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Agent Endpoints</div>
+            <div class="endpoints">
+                <!-- Create Agent -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method post">POST</div>
+                        <div class="endpoint-path">/api/agents</div>
+                        <div class="endpoint-description">Create a new agent</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Creates a new agent associated with a session.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'POST', '/api/agents', getPayload('create-agent'), 'create-agent-response', handleAgentResponse)">
+                            <div class="form-group">
+                                <label for="create-agent-name">Name</label>
+                                <input type="text" id="create-agent-name" class="form-control" placeholder="Agent name"
+                                    value="Test Agent" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="create-agent-role">Role</label>
+                                <input type="text" id="create-agent-role" class="form-control" placeholder="Agent role"
+                                    value="assistant" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="create-agent-prompt">Prompt</label>
+                                <textarea id="create-agent-prompt" class="form-control" placeholder="Agent prompt"
+                                    required>You are a helpful assistant</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="create-agent-model">Model</label>
+                                <input type="text" id="create-agent-model" class="form-control"
+                                    placeholder="Agent model" value="gpt-4" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="create-agent-session-id">Session ID</label>
+                                <input type="text" id="create-agent-session-id" class="form-control"
+                                    placeholder="Session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('create-agent-session-id', sessionId)">Use Current
+                                    Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="create-agent-response"></div>
+                    </div>
+                </div>
+
+                <!-- List Agents -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/agents</div>
+                        <div class="endpoint-description">List all agents</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves a list of all agents.</p>
+                        <form onsubmit="testEndpoint(event, 'GET', '/api/agents', null, 'list-agents-response')">
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="list-agents-response"></div>
+                    </div>
+                </div>
+
+                <!-- Get Agent -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/agents/{id}</div>
+                        <div class="endpoint-description">Get a specific agent</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves a specific agent by its ID.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/agents/' + document.getElementById('get-agent-id').value, null, 'get-agent-response')">
+                            <div class="form-group">
+                                <label for="get-agent-id">Agent ID</label>
+                                <input type="text" id="get-agent-id" class="form-control" placeholder="Enter agent ID"
+                                    required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('get-agent-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="get-agent-response"></div>
+                    </div>
+                </div>
+
+                <!-- Update Agent -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method put">PUT</div>
+                        <div class="endpoint-path">/api/agents/{id}</div>
+                        <div class="endpoint-description">Update an agent</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Updates an agent's properties.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'PUT', '/api/agents/' + document.getElementById('update-agent-id').value, getPayload('update-agent'), 'update-agent-response')">
+                            <div class="form-group">
+                                <label for="update-agent-id">Agent ID</label>
+                                <input type="text" id="update-agent-id" class="form-control"
+                                    placeholder="Enter agent ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('update-agent-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="update-agent-name">Name (optional)</label>
+                                <input type="text" id="update-agent-name" class="form-control"
+                                    placeholder="New agent name">
+                            </div>
+                            <div class="form-group">
+                                <label for="update-agent-role">Role (optional)</label>
+                                <input type="text" id="update-agent-role" class="form-control"
+                                    placeholder="New agent role">
+                            </div>
+                            <div class="form-group">
+                                <label for="update-agent-is-online">Is Online</label>
+                                <select id="update-agent-is-online" class="form-control">
+                                    <option value="">-- No Change --</option>
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="update-agent-response"></div>
+                    </div>
+                </div>
+
+                <!-- Update Agent Online Status -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method put">PUT</div>
+                        <div class="endpoint-path">/api/agents/{id}/online</div>
+                        <div class="endpoint-description">Update agent online status</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Updates an agent's online status.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'PUT', '/api/agents/' + document.getElementById('online-agent-id').value + '/online', {isOnline: document.getElementById('agent-is-online').value === 'true'}, 'online-agent-response')">
+                            <div class="form-group">
+                                <label for="online-agent-id">Agent ID</label>
+                                <input type="text" id="online-agent-id" class="form-control"
+                                    placeholder="Enter agent ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('online-agent-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="agent-is-online">Online Status</label>
+                                <select id="agent-is-online" class="form-control" required>
+                                    <option value="true">Online</option>
+                                    <option value="false">Offline</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="online-agent-response"></div>
+                    </div>
+                </div>
+
+                <!-- Append Agent Reasoning Log -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method post">POST</div>
+                        <div class="endpoint-path">/api/agents/{id}/reasoning</div>
+                        <div class="endpoint-description">Append to agent reasoning log</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Appends to an agent's reasoning log.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'POST', '/api/agents/' + document.getElementById('reasoning-agent-id').value + '/reasoning', {log: document.getElementById('reasoning-log').value}, 'reasoning-agent-response')">
+                            <div class="form-group">
+                                <label for="reasoning-agent-id">Agent ID</label>
+                                <input type="text" id="reasoning-agent-id" class="form-control"
+                                    placeholder="Enter agent ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('reasoning-agent-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="reasoning-log">Log Entry</label>
+                                <textarea id="reasoning-log" class="form-control" placeholder="Enter reasoning log"
+                                    required>I am thinking about this problem carefully...</textarea>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="reasoning-agent-response"></div>
+                    </div>
+                </div>
+
+                <!-- List Session Agents -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/sessions/{sessionId}/agents</div>
+                        <div class="endpoint-description">List agents for a session</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves all agents for a specific session.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/sessions/' + document.getElementById('session-agents-id').value + '/agents', null, 'session-agents-response')">
+                            <div class="form-group">
+                                <label for="session-agents-id">Session ID</label>
+                                <input type="text" id="session-agents-id" class="form-control"
+                                    placeholder="Enter session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('session-agents-id', sessionId)">Use Current Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="session-agents-response"></div>
+                    </div>
+                </div>
+
+                <!-- Delete Agent -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method delete">DELETE</div>
+                        <div class="endpoint-path">/api/agents/{id}</div>
+                        <div class="endpoint-description">Delete an agent</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Deletes an agent.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'DELETE', '/api/agents/' + document.getElementById('delete-agent-id').value, null, 'delete-agent-response')">
+                            <div class="form-group">
+                                <label for="delete-agent-id">Agent ID</label>
+                                <input type="text" id="delete-agent-id" class="form-control"
+                                    placeholder="Enter agent ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('delete-agent-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="delete-agent-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Message Endpoints</div>
+            <div class="endpoints">
+                <!-- Create Message -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method post">POST</div>
+                        <div class="endpoint-path">/api/messages</div>
+                        <div class="endpoint-description">Create a new message</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Creates a new message associated with an agent and session.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'POST', '/api/messages', getPayload('create-message'), 'create-message-response', handleMessageResponse)">
+                            <div class="form-group">
+                                <label for="create-message-content">Content</label>
+                                <textarea id="create-message-content" class="form-control" placeholder="Message content"
+                                    required>Hello, this is a test message</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="create-message-agent-id">Agent ID</label>
+                                <input type="text" id="create-message-agent-id" class="form-control"
+                                    placeholder="Agent ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('create-message-agent-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="create-message-session-id">Session ID</label>
+                                <input type="text" id="create-message-session-id" class="form-control"
+                                    placeholder="Session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('create-message-session-id', sessionId)">Use Current
+                                    Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="create-message-response"></div>
+                    </div>
+                </div>
+
+                <!-- Get Message -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/messages/{id}</div>
+                        <div class="endpoint-description">Get a specific message</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves a specific message by its ID.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/messages/' + document.getElementById('get-message-id').value, null, 'get-message-response')">
+                            <div class="form-group">
+                                <label for="get-message-id">Message ID</label>
+                                <input type="text" id="get-message-id" class="form-control"
+                                    placeholder="Enter message ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('get-message-id', messageId)">Use Current Message</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="get-message-response"></div>
+                    </div>
+                </div>
+
+                <!-- Update Message -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method put">PUT</div>
+                        <div class="endpoint-path">/api/messages/{id}</div>
+                        <div class="endpoint-description">Update a message</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Updates a message's content.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'PUT', '/api/messages/' + document.getElementById('update-message-id').value, {content: document.getElementById('update-message-content').value}, 'update-message-response')">
+                            <div class="form-group">
+                                <label for="update-message-id">Message ID</label>
+                                <input type="text" id="update-message-id" class="form-control"
+                                    placeholder="Enter message ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('update-message-id', messageId)">Use Current Message</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="update-message-content">New Content</label>
+                                <textarea id="update-message-content" class="form-control"
+                                    placeholder="New message content" required>Updated message content</textarea>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="update-message-response"></div>
+                    </div>
+                </div>
+
+                <!-- Get Session Messages -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/sessions/{sessionId}/messages</div>
+                        <div class="endpoint-description">List messages for a session</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves all messages for a specific session.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/sessions/' + document.getElementById('session-messages-id').value + '/messages', null, 'session-messages-response')">
+                            <div class="form-group">
+                                <label for="session-messages-id">Session ID</label>
+                                <input type="text" id="session-messages-id" class="form-control"
+                                    placeholder="Enter session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('session-messages-id', sessionId)">Use Current Session</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="session-messages-response"></div>
+                    </div>
+                </div>
+
+                <!-- Get Agent Messages -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method get">GET</div>
+                        <div class="endpoint-path">/api/agents/{agentId}/messages</div>
+                        <div class="endpoint-description">List messages for an agent</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves all messages for a specific agent.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'GET', '/api/agents/' + document.getElementById('agent-messages-id').value + '/messages', null, 'agent-messages-response')">
+                            <div class="form-group">
+                                <label for="agent-messages-id">Agent ID</label>
+                                <input type="text" id="agent-messages-id" class="form-control"
+                                    placeholder="Enter agent ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('agent-messages-id', agentId)">Use Current Agent</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="agent-messages-response"></div>
+                    </div>
+                </div>
+
+                <!-- Get New Messages -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method post">POST</div>
+                        <div class="endpoint-path">/api/sessions/{sessionId}/messages/new</div>
+                        <div class="endpoint-description">Get new messages after a timestamp</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Retrieves all messages for a session created after a specific timestamp.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'POST', '/api/sessions/' + document.getElementById('new-messages-session-id').value + '/messages/new', {after: document.getElementById('new-messages-after').value}, 'new-messages-response')">
+                            <div class="form-group">
+                                <label for="new-messages-session-id">Session ID</label>
+                                <input type="text" id="new-messages-session-id" class="form-control"
+                                    placeholder="Enter session ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('new-messages-session-id', sessionId)">Use Current
+                                    Session</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-messages-after">After (ISO DateTime)</label>
+                                <input type="text" id="new-messages-after" class="form-control"
+                                    placeholder="YYYY-MM-DDTHH:MM:SSZ" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="document.getElementById('new-messages-after').value = new Date(Date.now() - 3600000).toISOString()">1
+                                    Hour Ago (Timezone may be off)</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="new-messages-response"></div>
+                    </div>
+                </div>
+
+                <!-- Delete Message -->
+                <div class="endpoint">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <div class="method delete">DELETE</div>
+                        <div class="endpoint-path">/api/messages/{id}</div>
+                        <div class="endpoint-description">Delete a message</div>
+                    </div>
+                    <div class="endpoint-details">
+                        <p>Deletes a message.</p>
+                        <form
+                            onsubmit="testEndpoint(event, 'DELETE', '/api/messages/' + document.getElementById('delete-message-id').value, null, 'delete-message-response')">
+                            <div class="form-group">
+                                <label for="delete-message-id">Message ID</label>
+                                <input type="text" id="delete-message-id" class="form-control"
+                                    placeholder="Enter message ID" required>
+                                <button type="button" class="btn btn-sm"
+                                    onclick="fillField('delete-message-id', messageId)">Use Current Message</button>
+                            </div>
+                            <button type="submit" class="btn">Test</button>
+                        </form>
+                        <div class="response" id="delete-message-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="stored-values">
+        <div class="stored-value">
+            <span>Session ID:</span>
+            <code id="stored-session-id">None</code>
+            <button class="copy-btn" onclick="copyToClipboard('stored-session-id')">📋</button>
+        </div>
+        <div class="stored-value">
+            <span>Agent ID:</span>
+            <code id="stored-agent-id">None</code>
+            <button class="copy-btn" onclick="copyToClipboard('stored-agent-id')">📋</button>
+        </div>
+        <div class="stored-value">
+            <span>Message ID:</span>
+            <code id="stored-message-id">None</code>
+            <button class="copy-btn" onclick="copyToClipboard('stored-message-id')">📋</button>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let sessionId = null;
+        let agentId = null;
+        let messageId = null;
+
+        // Helper functions
+        function toggleEndpoint(element) {
+            const endpoint = element.parentNode;
+
+            // Close all other endpoints
+            document.querySelectorAll('.endpoint.active').forEach(item => {
+                if (item !== endpoint) {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Toggle current endpoint
+            endpoint.classList.toggle('active');
+        }
+
+        function getPayload(formPrefix) {
+            switch (formPrefix) {
+                case 'create-agent':
+                    return {
+                        name: document.getElementById('create-agent-name').value,
+                        role: document.getElementById('create-agent-role').value,
+                        prompt: document.getElementById('create-agent-prompt').value,
+                        model: document.getElementById('create-agent-model').value,
+                        sessionId: document.getElementById('create-agent-session-id').value
+                    };
+
+                case 'update-agent':
+                    const payload = {};
+
+                    const name = document.getElementById('update-agent-name').value;
+                    const role = document.getElementById('update-agent-role').value;
+                    const isOnline = document.getElementById('update-agent-is-online').value;
+
+                    if (name) payload.name = name;
+                    if (role) payload.role = role;
+                    if (isOnline) payload.isOnline = isOnline === 'true';
+
+                    return payload;
+
+                case 'create-message':
+                    return {
+                        content: document.getElementById('create-message-content').value,
+                        agentId: document.getElementById('create-message-agent-id').value,
+                        sessionId: document.getElementById('create-message-session-id').value
+                    };
+
+                default:
+                    return null;
+            }
+        }
+
+        async function testEndpoint(event, method, path, payload, responseId, callback = null) {
+            event.preventDefault();
+
+            const responseElement = document.getElementById(responseId);
+            responseElement.innerHTML = '<p>Loading...</p>';
+
+            try {
+                const options = {
+                    method,
+                    headers: {}
+                };
+
+                if (payload) {
+                    options.body = JSON.stringify(payload);
+                    options.headers['Content-Type'] = 'application/json';
+                }
+
+                const response = await fetch(path, options);
+                const statusClass = response.ok ? 'success' : 'error';
+
+                let responseBody;
+
+                try {
+                    responseBody = await response.json();
+                } catch (e) {
+                    responseBody = null;
+                }
+
+                const responseHtml = `
+                    <h4>Response <span class="status ${statusClass}">${response.status} ${response.statusText}</span></h4>
+                    ${responseBody ? `<div class="response-body">${JSON.stringify(responseBody, null, 2)}</div>` : '<p>No response body</p>'}
+                `;
+
+                responseElement.innerHTML = responseHtml;
+
+                if (response.ok && callback) {
+                    callback(responseBody);
+                }
+            } catch (error) {
+                responseElement.innerHTML = `
+                    <h4>Error <span class="status error">Failed</span></h4>
+                    <div class="response-body">${error.message}</div>
+                `;
+            }
+        }
+
+        function fillField(fieldId, value) {
+            if (!value) {
+                alert('No value stored yet');
+                return;
+            }
+
+            document.getElementById(fieldId).value = value;
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+
+            if (element.innerText === 'None') {
+                alert('No value to copy');
+                return;
+            }
+
+            navigator.clipboard.writeText(element.innerText).then(
+                () => {
+                    // Flash the element to indicate it was copied
+                    element.style.backgroundColor = '#d1fae5';
+                    setTimeout(() => {
+                        element.style.backgroundColor = '';
+                    }, 300);
+                },
+                (err) => {
+                    console.error('Failed to copy: ', err);
+                }
+            );
+        }
+
+        function updateStoredValues() {
+            document.getElementById('stored-session-id').innerText = sessionId || 'None';
+            document.getElementById('stored-agent-id').innerText = agentId || 'None';
+            document.getElementById('stored-message-id').innerText = messageId || 'None';
+        }
+
+        // Callbacks
+        function handleSessionResponse(data) {
+            if (data && data.id) {
+                sessionId = data.id;
+                updateStoredValues();
+            }
+        }
+
+        function handleAgentResponse(data) {
+            if (data && data.id) {
+                agentId = data.id;
+                updateStoredValues();
+            }
+        }
+
+        function handleMessageResponse(data) {
+            if (data && data.id) {
+                messageId = data.id;
+                updateStoredValues();
+            }
+        }
+
+        // Initialize
+        updateStoredValues();
+    </script>
+</body>
+
+</html>
